@@ -58,19 +58,22 @@ PNG、JPEG、TIFF などの画像形式を WebP や AVIF に変換する、モ�
 
 - **HTML5**: 基本構造
 - **Tailwind CSS**: モダンなUIデザイン
-- **Vanilla JavaScript**: 画像変換ロジック
-- **Canvas API**: 画像処理
+- **Vanilla JavaScript (ES Modules)**: 画像変換ロジック
+- **Canvas API**: 画像処理（WebP変換）
+- **@jsquash/avif (WebAssembly)**: AVIF エンコーディング
 - **Clipboard API**: クリップボードからの画像取得
 - **JSZip**: ZIP ファイル生成
 
 ## 📋 対応ブラウザ
 
-- Chrome 94+（WebP & AVIF 対応）
-- Firefox 93+（WebP & AVIF 対応）
-- Safari 16+（WebP & AVIF 対応）
-- Edge 94+（WebP & AVIF 対応）
+このアプリケーションは、WebAssembly をサポートする全てのモダンブラウザで動作します。
 
-**注意**: AVIF 形式は一部の古いブラウザではサポートされていません。非対応ブラウザでは自動的に WebP にフォールバックします。
+- **Chrome 90+**
+- **Firefox 89+**
+- **Safari 15+**
+- **Edge 90+**
+
+**AVIF 変換について**: WebAssembly ベースのエンコーダー（@jsquash/avif）を使用しているため、ブラウザのネイティブAVIF対応に依存せず、全てのモダンブラウザでAVIF変換が可能です。
 
 ## 🎨 UI デザイン
 

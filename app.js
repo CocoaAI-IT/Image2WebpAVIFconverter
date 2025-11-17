@@ -1,3 +1,6 @@
+// Import AVIF encoder library
+import { encode as avifEncode } from 'https://unpkg.com/@jsquash/avif@1.3.0/index.js';
+
 // Global variables
 let selectedFiles = [];
 let convertedImages = [];
@@ -206,38 +209,34 @@ async function convertImage(file, format, webpMode, quality) {
                     ctx.drawImage(img, 0, 0);
 
                     // Convert to target format
-                    let mimeType, extension;
-                    let canvasQuality = quality;
+                    let blob, extension;
 
                     if (format === 'webp') {
-                        mimeType = 'image/webp';
                         extension = 'webp';
-                        // For lossless WebP, quality should be 1
-                        if (webpMode === 'lossless') {
-                            canvasQuality = 1;
-                        }
+                        const canvasQuality = webpMode === 'lossless' ? 1 : quality;
+
+                        // Use Canvas API for WebP
+                        blob = await new Promise(resolve => {
+                            canvas.toBlob(resolve, 'image/webp', canvasQuality);
+                        });
                     } else if (format === 'avif') {
-                        // Check if AVIF is supported
-                        const testCanvas = document.createElement('canvas');
-                        testCanvas.width = 1;
-                        testCanvas.height = 1;
-                        const avifSupported = testCanvas.toDataURL('image/avif').indexOf('data:image/avif') === 0;
+                        extension = 'avif';
 
-                        if (!avifSupported) {
-                            // Fallback to WebP if AVIF is not supported
-                            alert('お使いのブラウザはAVIFをサポートしていません。WebPに変換します。');
-                            mimeType = 'image/webp';
-                            extension = 'webp';
-                        } else {
-                            mimeType = 'image/avif';
-                            extension = 'avif';
-                        }
+                        // Use @jsquash/avif library for AVIF encoding
+                        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+                        // Convert quality from 0-1 to 0-100 for AVIF encoder
+                        const avifQuality = Math.round(quality * 100);
+
+                        // Encode to AVIF using WebAssembly encoder
+                        const avifData = await avifEncode(imageData, {
+                            quality: avifQuality,
+                            speed: 6 // Balance between speed and compression (0-10, higher is faster)
+                        });
+
+                        // Convert Uint8Array to Blob
+                        blob = new Blob([avifData], { type: 'image/avif' });
                     }
-
-                    // Create blob
-                    const blob = await new Promise(resolve => {
-                        canvas.toBlob(resolve, mimeType, canvasQuality);
-                    });
 
                     // Create preview URLs
                     const originalUrl = URL.createObjectURL(file);
@@ -369,3 +368,6 @@ function formatFileSize(bytes) {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
 }
+
+// Expose downloadSingle to global scope for onclick handler
+window.downloadSingle = downloadSingle;
