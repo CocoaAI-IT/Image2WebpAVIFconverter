@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - master
+      - claude/image-converter-webapp-01SGKh1CeK5ke9RNhtZvFJdn
   workflow_dispatch:
 
 permissions:
