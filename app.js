@@ -6,6 +6,7 @@ let convertedImages = [];
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
 const selectFilesBtn = document.getElementById('selectFilesBtn');
+const pasteBtn = document.getElementById('pasteBtn');
 const convertBtn = document.getElementById('convertBtn');
 const downloadAllBtn = document.getElementById('downloadAllBtn');
 const resultsSection = document.getElementById('resultsSection');
@@ -18,12 +19,16 @@ const qualitySection = document.getElementById('qualitySection');
 
 // Event Listeners
 selectFilesBtn.addEventListener('click', () => fileInput.click());
+pasteBtn.addEventListener('click', handlePasteFromClipboard);
 fileInput.addEventListener('change', handleFileSelect);
 convertBtn.addEventListener('click', convertImages);
 downloadAllBtn.addEventListener('click', downloadAllAsZip);
 qualitySlider.addEventListener('input', (e) => {
     qualityValue.textContent = e.target.value;
 });
+
+// Paste event listener (Ctrl+V / Cmd+V)
+document.addEventListener('paste', handlePasteEvent);
 
 // Format change listener
 document.querySelectorAll('input[name="format"]').forEach(radio => {
@@ -70,6 +75,68 @@ dropZone.addEventListener('drop', (e) => {
 function handleFileSelect(e) {
     const files = Array.from(e.target.files);
     handleFiles(files);
+}
+
+// Handle paste from clipboard button
+async function handlePasteFromClipboard() {
+    try {
+        // Check if Clipboard API is supported
+        if (!navigator.clipboard || !navigator.clipboard.read) {
+            alert('お使いのブラウザはクリップボードAPIをサポートしていません。\nCtrl+V (Windows) / Cmd+V (Mac) をお試しください。');
+            return;
+        }
+
+        // Request clipboard permission and read clipboard
+        const clipboardItems = await navigator.clipboard.read();
+        const imageFiles = [];
+
+        for (const clipboardItem of clipboardItems) {
+            for (const type of clipboardItem.types) {
+                if (type.startsWith('image/')) {
+                    const blob = await clipboardItem.getType(type);
+                    // Convert blob to File object
+                    const file = new File([blob], `clipboard-image-${Date.now()}.${type.split('/')[1]}`, { type });
+                    imageFiles.push(file);
+                }
+            }
+        }
+
+        if (imageFiles.length === 0) {
+            alert('クリップボードに画像が見つかりませんでした。\n画像をコピーしてから再度お試しください。');
+            return;
+        }
+
+        handleFiles(imageFiles);
+    } catch (error) {
+        console.error('Clipboard error:', error);
+        alert('クリップボードからの読み取りに失敗しました。\n' + error.message);
+    }
+}
+
+// Handle paste event (Ctrl+V / Cmd+V)
+async function handlePasteEvent(e) {
+    // Check if the paste event contains files
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    const imageFiles = [];
+
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.type.startsWith('image/')) {
+            e.preventDefault();
+            const blob = item.getAsFile();
+            if (blob) {
+                // Convert to File object with a proper name
+                const file = new File([blob], `pasted-image-${Date.now()}.${item.type.split('/')[1]}`, { type: item.type });
+                imageFiles.push(file);
+            }
+        }
+    }
+
+    if (imageFiles.length > 0) {
+        handleFiles(imageFiles);
+    }
 }
 
 // Handle files
