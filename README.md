@@ -33,8 +33,55 @@ PNG、JPEG、TIFF などの画像形式を WebP や AVIF に変換する、モ�
 
 ## 🚀 使い方
 
-1. **ファイルを開く**
-   - ブラウザで `index.html` を開きます
+### 起動方法
+
+このアプリケーションは ES Modules を使用しているため、ローカルHTTPサーバーで実行する必要があります。
+
+#### **方法1: 自動起動スクリプト（推奨）**
+
+**Windows:**
+```bash
+start-server.bat
+```
+ダブルクリックするだけで自動的にブラウザが開きます。
+
+**macOS / Linux:**
+```bash
+./start-server.sh
+```
+または
+```bash
+bash start-server.sh
+```
+
+#### **方法2: 手動でPythonサーバーを起動**
+
+```bash
+# Python 3がインストールされている場合
+python3 server.py
+
+# または
+python server.py
+```
+
+ブラウザで `http://localhost:8000` を開きます。
+
+#### **方法3: その他の方法**
+
+**Node.jsを使用:**
+```bash
+npx http-server -p 8000 -c-1
+```
+
+**VS Code Live Server拡張機能:**
+1. VS Codeで `index.html` を開く
+2. 右クリック → "Open with Live Server"
+
+### アプリの使い方
+
+1. **ローカルサーバーを起動**
+   - 上記の方法でサーバーを起動します
+   - ブラウザで `http://localhost:8000` にアクセス
 
 2. **画像を選択** (以下のいずれかの方法)
    - ドラッグ&ドロップで画像をアップロード
@@ -87,14 +134,52 @@ PNG、JPEG、TIFF などの画像形式を WebP や AVIF に変換する、モ�
 
 ```
 Image2WebpAVIFconverter/
-├── index.html    # メインHTMLファイル
-├── app.js        # JavaScript ロジック
-└── README.md     # このファイル
+├── index.html         # メインHTMLファイル
+├── app.js             # JavaScript ロジック（ES Module）
+├── server.py          # Pythonローカルサーバー
+├── start-server.bat   # Windows用起動スクリプト
+├── start-server.sh    # macOS/Linux用起動スクリプト
+└── README.md          # このファイル
 ```
 
 ## 🔒 プライバシー
 
 このアプリケーションは完全にブラウザ内で動作します。画像はサーバーにアップロードされることはなく、すべての処理がローカルで行われます。
+
+## 🔧 トラブルシューティング
+
+### CORSエラーが発生する
+
+**エラー例:**
+```
+Access to script at 'file:///.../app.js' from origin 'null' has been blocked by CORS policy
+```
+
+**原因:**
+HTMLファイルを `file://` プロトコルで直接開いているため、ES Modules が動作しません。
+
+**解決方法:**
+1. ローカルHTTPサーバーを起動してください（上記の「起動方法」を参照）
+2. `start-server.bat`（Windows）または `start-server.sh`（macOS/Linux）を実行
+3. ブラウザで `http://localhost:8000` にアクセス
+
+### ボタンが反応しない
+
+- ブラウザのコンソールにエラーが表示されていないか確認してください
+- ローカルサーバー経由でアクセスしているか確認してください
+- ブラウザのキャッシュをクリアして再読み込みしてください（Ctrl+Shift+R / Cmd+Shift+R）
+
+### AVIF変換が遅い
+
+- AVIF変換はWebAssemblyを使用するため、大きな画像では数秒かかる場合があります
+- 複数の画像を変換する場合は、順番に処理されるため時間がかかります
+- これは正常な動作です
+
+### クリップボードから貼り付けできない
+
+- ブラウザがClipboard APIをサポートしているか確認してください
+- HTTPS または localhost でアクセスしているか確認してください
+- ブラウザのクリップボード権限を許可してください
 
 ## 📝 ライセンス
 
