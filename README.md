@@ -2,6 +2,16 @@
 
 PNG、JPEG、TIFF などの画像形式を WebP や AVIF に変換する、モダンなWebアプリケーションです。
 
+## 🌐 オンラインデモ
+
+**GitHub Pagesでホスティング中！**
+
+このアプリケーションはGitHub Pagesで公開されており、インストール不要で今すぐ使えます。
+
+👉 **[https://CocoaAI-IT.github.io/Image2WebpAVIFconverter/](https://CocoaAI-IT.github.io/Image2WebpAVIFconverter/)**
+
+サーバー設定不要で、ブラウザで直接アクセスできます！
+
 ## ✨ 機能
 
 - **複数の画像形式に対応**
@@ -35,9 +45,21 @@ PNG、JPEG、TIFF などの画像形式を WebP や AVIF に変換する、モ�
 
 ### 起動方法
 
-このアプリケーションは ES Modules を使用しているため、ローカルHTTPサーバーで実行する必要があります。
+#### **方法1: GitHub Pagesを使用（推奨・最も簡単）**
 
-#### **方法1: 自動起動スクリプト（推奨）**
+サーバー設定不要！以下のURLにアクセスするだけ：
+
+👉 **[https://CocoaAI-IT.github.io/Image2WebpAVIFconverter/](https://CocoaAI-IT.github.io/Image2WebpAVIFconverter/)**
+
+すべての機能が動作し、画像はブラウザ内で処理されます（サーバーにアップロードされません）。
+
+---
+
+### ローカルで実行する場合
+
+このアプリケーションは ES Modules を使用しているため、ローカルで実行する場合はHTTPサーバーが必要です。
+
+#### **方法2: 自動起動スクリプト**
 
 **Windows:**
 ```bash
@@ -54,7 +76,7 @@ start-server.bat
 bash start-server.sh
 ```
 
-#### **方法2: 手動でPythonサーバーを起動**
+#### **方法3: 手動でPythonサーバーを起動**
 
 ```bash
 # Python 3がインストールされている場合
@@ -66,7 +88,7 @@ python server.py
 
 ブラウザで `http://localhost:8000` を開きます。
 
-#### **方法3: その他の方法**
+#### **方法4: その他の方法**
 
 **Node.jsを使用:**
 ```bash
@@ -134,13 +156,40 @@ npx http-server -p 8000 -c-1
 
 ```
 Image2WebpAVIFconverter/
-├── index.html         # メインHTMLファイル
-├── app.js             # JavaScript ロジック（ES Module）
-├── server.py          # Pythonローカルサーバー
-├── start-server.bat   # Windows用起動スクリプト
-├── start-server.sh    # macOS/Linux用起動スクリプト
-└── README.md          # このファイル
+├── .github/
+│   └── workflows/
+│       └── deploy.yml     # GitHub Pages自動デプロイ設定
+├── index.html             # メインHTMLファイル
+├── app.js                 # JavaScript ロジック（ES Module）
+├── server.py              # Pythonローカルサーバー
+├── start-server.bat       # Windows用起動スクリプト
+├── start-server.sh        # macOS/Linux用起動スクリプト
+└── README.md              # このファイル
 ```
+
+## 🚀 GitHub Pagesへのデプロイ
+
+このリポジトリはGitHub Actionsで自動的にGitHub Pagesにデプロイされます。
+
+### 自動デプロイ（設定済み）
+
+1. **GitHub Pagesを有効化:**
+   - GitHubリポジトリの「Settings」→「Pages」
+   - Source: 「GitHub Actions」を選択
+
+2. **自動デプロイ:**
+   - `main` または `master` ブランチにプッシュすると自動デプロイ
+   - GitHub Actionsが自動的に実行されます
+
+3. **デプロイ状況の確認:**
+   - リポジトリの「Actions」タブでデプロイ状況を確認
+   - デプロイ完了後、自動的に公開されます
+
+### 独自ドメインの設定（オプション）
+
+1. リポジトリの「Settings」→「Pages」
+2. 「Custom domain」に独自ドメインを入力
+3. DNSにCNAMEレコードを追加
 
 ## 🔒 プライバシー
 
